@@ -1,0 +1,1 @@
+# MyBB-Registration-Invite-Only
