@@ -279,7 +279,7 @@ function doinviteonly_start()
 	global $db, $mybb, $templates, $settings, $doinviteonly_input, $doinviteonly_error,
 	$doinviteonly_do_input;
 
-    if($settings['sbaudio_enable'] != 1)
+    if($settings['doinviteonly_enable'] != 1)
     {
         return;
     }
