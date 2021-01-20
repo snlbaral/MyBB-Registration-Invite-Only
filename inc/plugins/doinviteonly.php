@@ -88,7 +88,7 @@ function doinviteonly_activate()
 
 	//Admin CP Settings
 	$doinviteonly_group = array(
-		'gid' => '',
+		'gid' => (int)'',
 		'name' => 'doinviteonly',
 		'title' => 'MyBB Registration Invite Only',
 		'description' => 'Settings for MyBB Registration Invite Only',
