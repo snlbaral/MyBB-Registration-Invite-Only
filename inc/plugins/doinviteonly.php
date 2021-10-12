@@ -17,7 +17,7 @@ function doinviteonly_info()
 		'author' => 'Sunil Baral',
 		'website' => 'https://github.com/snlbaral',
 		'description' => 'This plugin allows register only by invite',
-		'version' => '1.0',
+		'version' => '1.2',
 		'compatibility' => '18*',
 		'guid' => '',
 	);
@@ -100,7 +100,7 @@ function doinviteonly_activate()
 
 	//Enable or Disable
 	$doinviteonly_enable = array(
-		'sid' => 'NULL',
+		'sid' => '0',
 		'name' => 'doinviteonly_enable',
 		'title' => 'Do you want to enable this plugin?',
 		'description' => 'If you set this option to yes, this plugin will start working.',
@@ -112,7 +112,7 @@ function doinviteonly_activate()
 
 	//Allowed User Group
 	$doinviteonly_allowed_group = array(
-		'sid' => 'NULL',
+		'sid' => '0',
 		'name' => 'doinviteonly_allowed_group',
 		'title' => 'Which groups this plugin is enable for?',
 		'description' => 'Add gid of group that will be able to use this plugin.',
@@ -128,7 +128,7 @@ function doinviteonly_activate()
 
 
 	$insert_temp = array(
-		'tid' => NULL,
+		'tid' => 0,
 		'title' => 'doinviteonly_input',
 		'template' => $db->escape_string('
 <label><b>Invite Code:</b></label><br/><input type="text" style="background: #fff;padding:6px;border:1px solid #ccc;outline:0;width:30%;margin:10px 0px" name="invitecode" autocomplete="off" required><br/>
@@ -140,7 +140,7 @@ function doinviteonly_activate()
 	$db->insert_query('templates',$insert_temp);
 
 	$insert_temp = array(
-		'tid' => NULL,
+		'tid' => 0,
 		'title' => 'doinviteonly_error',
 		'template' => $db->escape_string('
 <div class="red_alert">Invite Code Mismatch</div>
@@ -152,7 +152,7 @@ function doinviteonly_activate()
 	$db->insert_query('templates',$insert_temp);
 
 	$insert_temp = array(
-		'tid' => NULL,
+		'tid' => 0,
 		'title' => 'doinviteonly_do_input',
 		'template' => $db->escape_string('
 <input type="hidden" value="{$invitecode}" name="invitecode"> 
@@ -164,7 +164,7 @@ function doinviteonly_activate()
 	$db->insert_query('templates',$insert_temp);
 
 	$insert_temp = array(
-		'tid' => NULL,
+		'tid' => 0,
 		'title' => 'doinviteonly_usercp_link',
 		'template' => $db->escape_string('
 <br />
@@ -192,7 +192,7 @@ function doinviteonly_activate()
 
 
 	$insert_temp = array(
-		'tid' => NULL,
+		'tid' => 0,
 		'title' => 'doinviteonly_usercp_list',
 		'template' => $db->escape_string('
 <br />
@@ -215,7 +215,7 @@ function doinviteonly_activate()
 	$db->insert_query('templates',$insert_temp);
 
 	$insert_temp = array(
-		'tid' => NULL,
+		'tid' => 0,
 		'title' => 'doinviteonly_usercp_list_row',
 		'template' => $db->escape_string('
 <br />
@@ -339,7 +339,7 @@ function doinviteonly_usercp()
 		$uid = $mybb->user['uid'];
 		$uid = (int)$uid;
 
-		$check_invitecode = $db->query("SELECT * from mybb_doinviteonly WHERE uid='$uid' AND codeused='0'");
+		$check_invitecode = $db->simple_select("doinviteonly", "*", "uid='{$uid}' AND codeused='0'");
 		if($db->num_rows($check_invitecode)>0) {
 			while($row=$db->fetch_array($check_invitecode)) {
 				$invitecodelist = $row['invitecode'];
