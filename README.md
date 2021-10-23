@@ -9,7 +9,10 @@ Installation:
     1. Copy and paste inc folder to your forum's root directory.
     2. Install and Activate the plugin from Admin CP.
     
-    
+Upgrade:
+
+    1. Copy and paste inc folder to your forum's root directory.
+    2. Deactivate and Activate the plugin from Admin CP.    
     
 Mybb Download:
 
