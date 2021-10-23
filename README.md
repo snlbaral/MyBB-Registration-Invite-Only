@@ -1,6 +1,6 @@
 # MyBB-Registration-Invite-Only
 
-MyBB Registration Invite Only[Build #1 (dev)] (v1.0)
+MyBB Registration Invite Only
 
     -> User can only register using invite code.
 
