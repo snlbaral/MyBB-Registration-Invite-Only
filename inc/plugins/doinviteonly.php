@@ -122,8 +122,20 @@ function doinviteonly_activate()
 		'gid' => intval($gid),
 	);
 
+	//Expiration
+	$doinviteonly_expiration = array(
+		'sid' => '0',
+		'name' => 'doinviteonly_expiration',
+		'title' => 'Invitaion Code Expiration',
+		'optionscode' => 'select\n0=Never Expire\n1=1 Day\n3=3 Days\n5=5 Days\n7=7 Days\n30=1 Month',
+		'value' => '0',
+		'disporder' => 2,
+		'gid' => intval($gid),
+	);
+
 	$db->insert_query('settings',$doinviteonly_enable);
 	$db->insert_query('settings',$doinviteonly_allowed_group);
+	$db->insert_query('settings',$doinviteonly_expiration);
 	rebuild_settings();
 
 
@@ -256,6 +268,8 @@ function doinviteonly_deactivate()
 	global $db, $mybb, $settings;
 	$db->query("DELETE from ".TABLE_PREFIX."settinggroups WHERE name IN ('doinviteonly')");
 	$db->query("DELETE from ".TABLE_PREFIX."settings WHERE name IN ('doinviteonly_enable')");
+	$db->query("DELETE from ".TABLE_PREFIX."settings WHERE name IN ('doinviteonly_allowed_group')");
+	$db->query("DELETE from ".TABLE_PREFIX."settings WHERE name IN ('doinviteonly_expiration')");
 	$db->query("DELETE from ".TABLE_PREFIX."templates WHERE title LIKE 'doinviteonly%' AND sid='-1'");
 	rebuild_settings();
 
@@ -299,9 +313,19 @@ function doinviteonly_start()
 	    	//check on db if invite code exist
 	    	$invitecode = $db->escape_string($mybb->input['invitecode']);
 	    	$check_query = $db->simple_select("doinviteonly","*","invitecode='".$invitecode."' AND codeused='0'");
+	    	$today = date("Y-m-d H:i:s");
+	    	$expiration = $mybb->settings['doinviteonly_expiration'];
 	    	if($db->num_rows($check_query)<1) {
 	    		header("Location: member.php?action=register&error=1");
 	    	} else {
+	    		if($expiration) {
+	    			$row = $db->fetch_array($check_query);
+	    			$invitecode_generated = $row['dateline'];
+					$end_time = date('Y-m-d H:i:s', strtotime($invitecode_generated. ' + '.$expiration.' days'));
+					if($today>$end_time) {
+						header("Location: member.php?action=register&error=1");
+					}
+				}
 				eval("\$doinviteonly_do_input = \"".$templates->get('doinviteonly_do_input')."\";");
 	    		return;
 	    	}
@@ -338,12 +362,17 @@ function doinviteonly_usercp()
 		eval("\$doinviteonly_usercp_link = \"".$templates->get('doinviteonly_usercp_link')."\";");
 		$uid = $mybb->user['uid'];
 		$uid = (int)$uid;
-
 		$check_invitecode = $db->simple_select("doinviteonly", "*", "uid='{$uid}' AND codeused='0'");
+		$today = date("Y-m-d H:i:s");
+		$expiration = $mybb->settings['doinviteonly_expiration'];
 		if($db->num_rows($check_invitecode)>0) {
 			while($row=$db->fetch_array($check_invitecode)) {
 				$invitecodelist = $row['invitecode'];
 				$invitecode_generated = $row['dateline'];
+				if($expiration) {
+					$end_time = date('Y-m-d H:i:s', strtotime($invitecode_generated. ' + '.$expiration.' days'));
+					if($today>$end_time) continue;
+				}
 			    eval("\$invitecode_delete .= \"".$templates->get("doinviteonly_usercp_list_row")."\";");
 			}
 			eval("\$doinviteonly_usercp_list = \"".$templates->get('doinviteonly_usercp_list')."\";");
