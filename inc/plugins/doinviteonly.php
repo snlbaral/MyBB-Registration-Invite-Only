@@ -127,6 +127,7 @@ function doinviteonly_activate()
 		'sid' => '0',
 		'name' => 'doinviteonly_expiration',
 		'title' => 'Invitaion Code Expiration',
+		'description' => 'When will invitation code expire',
 		'optionscode' => 'select\n0=Never Expire\n1=1 Day\n3=3 Days\n5=5 Days\n7=7 Days\n30=1 Month',
 		'value' => '0',
 		'disporder' => 2,
